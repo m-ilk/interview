@@ -1,0 +1,60 @@
+@baseUrl = http://localhost:3000
+
+## Health check
+GET {{baseUrl}}/api/images/history
+
+
+### success upload Request -> 200
+POST {{baseUrl}}/api/images/compress
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="photo1.png"
+Content-Type: image/png
+
+< ./photo1.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+### empty content -> 400/Please upload an image file.
+POST {{baseUrl}}/api/images/compress
+Content-Type: application/json
+{}
+
+### invalid file type -> 400/Only image files are allowed.
+POST {{baseUrl}}/api/images/compress
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="note.txt"
+Content-Type: text/plain
+
+plain text payload
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### missing image field -> 400/Please upload an image file
+POST {{baseUrl}}/api/images/compress
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### empty image file -> 400/Please upload an image file
+POST {{baseUrl}}/api/images/compress
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="empty.png"
+Content-Type: image/png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### oversize file -> 400/Invalid image upload request.
+POST {{baseUrl}}/api/images/compress
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="bigimage.jpg"
+Content-Type: image/jpeg
+
+< ./bigimage.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
